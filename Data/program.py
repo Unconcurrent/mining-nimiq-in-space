@@ -1,4 +1,4 @@
-from random import randint
+from random import randint 
 import pygame, sys, os
 from tkinter import Tk, Text, Label, Button, END
 try: from Data.colors import all_colors as ac
@@ -17,6 +17,8 @@ green = (0, 255, 0)
 brun = (170, 85, 0)
 orange = (255, 72.8, 36.4)
 purple = (51, 0, 255)
+score = 0
+cub_score = 0
 
 def player(def_player):
     screen_text = smallfont.render(str(def_player), True, white)
@@ -121,8 +123,9 @@ def game_init():
         medfont = pygame.font.SysFont('Comic Sans MS', 50)
         largefont = pygame.font.SysFont('Comic Sans MS', 80)
         game_display = pygame.display.set_mode((size, size))
-    except: 
+    except Exception as e: 
         log('game initialization faild!')
+        log(e)
 
 
 def space_button_click():
@@ -207,20 +210,26 @@ def main_window():
     
     window.mainloop()
 
-def save_exit(player_i, save_score, two_player_i, save_cub_score):
-    path = os.path.abspath(os.path.dirname(sys.argv[0])) + '\\Data\\Score.txt'
+def save_and_exit():
+    log('saving score...')
+    path = os.path.abspath(os.path.dirname(sys.argv[0])) + '\\Score.txt'
     log(path)
-    f = open(path, "w")
+    if os.path.isfile(path):
+        f = open(path, "a")
+    else:
+        f = open(path, "w")
     f.write(
-        'Last ' + player_i + '`s' + ' score: ' + str(save_score) + ', '+ two_player_i +'`s score: ' + str(save_cub_score) + '\n')
+        'Last ' + player_i + '`s' + ' score: ' + str(score) + ', '+ two_player_i +'`s score: ' + str(cub_score) + '\n')
     f.close()
-    my_exit()
     
 def draw_nimiq(x_nimiq, y_nimiq):
     game_display.blit(nimiq_img, (x_nimiq, y_nimiq))
     
     
-def my_exit(code = 0):
+def my_exit():
+
+    log("saving...")
+    save_and_exit()
     log('exiting...')
     try: 
         window.destroy()
@@ -229,7 +238,7 @@ def my_exit(code = 0):
         log('window is alerty destroyed.')
     pygame.quit()
     log('exit complete!')
-    exit(int(code))
+    quit()
 
 def boom(player, x, y): 
     if player == player_i: 
@@ -245,16 +254,13 @@ def log(msg):
     try:
         log_file = os.path.abspath(os.path.dirname(sys.argv[0])) + '\\Data\\log.txt'
         print(msg)
-        if os.path.isfile(log_file) == False:
-            f = open(log_file, 'w+', 1)
-            f.write(str(msg))
-            f.write('\r\n')
-            f.close()
-        else:
+        if os.path.isfile(log_file):
             f = open(log_file, 'a')
-            f.write(str(msg))
-            f.write('\r\n')
-            f.close()
+        else:
+            f = open(log_file, 'w')
+        f.write(str(msg))
+        f.write('\r\n')
+        f.close()
     except: 
         print('Error you can`t open this file!')
         quit()
@@ -264,5 +270,5 @@ def get_color(colo_r):
     color = tuple(int(color_code[i:i+2], 16) for i in (0, 2 ,4))
     return color
 
-    
+
 main_window()  

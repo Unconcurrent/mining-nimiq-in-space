@@ -1,14 +1,13 @@
-from random import randint 
 import pygame
-from Data import program as p
-from Data.program import size, player_i, two_player_i, min_cub_move_speed, max_cub_move_speed, game_display, mode, clock, snake_speed, background
-p.log('lib load complete!')
+from random import randint 
+from Data import program as d
+from Data.program import size, player_i, two_player_i, min_cub_move_speed, max_cub_move_speed, game_display, mode, clock, snake_speed, background, score, cub_score, log
+log('lib load complete!')
 
 
 def loop():
-    global score, cub_score
     try:
-        p.log('game load complete!')
+        log('game load complete!')
 
         score = 0
         cub_score = 0
@@ -32,7 +31,7 @@ def loop():
 
         FPS = 30
         
-        p.log('Enter in main loop.')
+        log('Enter in main loop.')
 
         game_exit = False
         while not game_exit:
@@ -54,7 +53,7 @@ def loop():
                             FPS = 30
                         else:
                             pause = True
-                            FPS = 1
+                            FPS = 5
                     elif mode != 'One player':
                         if event.key == pygame.K_w:
                             y_change_cub = - speed
@@ -126,10 +125,10 @@ def loop():
                         cub_score += -1
                     else:
                         score += -1
-                    p.log('Respawning...')
-                    p.boom(two_player_i, x_cub, y_cub)
-                    p.boom(player_i, x, y)
-                    p.message('Respawning...', 'white', 'large')
+                    log('Respawning...')
+                    d.boom(two_player_i, x_cub, y_cub)
+                    d.boom(player_i, x, y)
+                    d.message('Respawning...', 'white', 'large')
                     clock.tick(2)
                     x = randint(0, size)
                     y = randint(0, size)
@@ -151,54 +150,62 @@ def loop():
                     y_change = 0
                     x_change = 0
                     x = 1
-                    p.boom(player_i, x, y)
+                    d.boom(player_i, x, y)
                     score += -1
                 elif x <= 0:
                     y_change = 0
                     x_change = 0
                     x = size - 21
-                    p.boom(player_i, x, y)
+                    d.boom(player_i, x, y)
                     score += -1
                 elif y >= size - 20:
                     y_change = 0
                     x_change = 0
                     y = 1
-                    p.boom(player_i, x, y)
+                    d.boom(player_i, x, y)
                     score += -1
                 elif y <= 0:
                     y_change = 0
                     x_change = 0
                     y = size - 21
-                    p.boom(player_i, x, y)
+                    d.boom(player_i, x, y)
                     score += -1
+                
+                elif x_nimiq >= size - 20: x = 1
+                    
+                elif x_nimiq <= 0: x_nimiq = size - 21
+
+                elif y_nimiq >= size - 20: y_nimiq = 1
+
+                elif y_nimiq <= 0: y_nimiq = size - 21
 
                 elif x_cub >= size - 20:
                     y_change_cub = 0
                     x_change_cub = 0
                     x_cub = 1
-                    p.boom(two_player_i, x_cub, y_cub)
                     if mode == 'Two player`s': 
+                        d.boom(two_player_i, x_cub, y_cub)
                         cub_score += -1
                 elif x_cub <= 0:
                     y_change_cub = 0
                     x_change_cub = 0
                     x_cub = size - 21
-                    p.boom(two_player_i, x_cub, y_cub)
                     if mode == 'Two player`s': 
+                        d.boom(two_player_i, x_cub, y_cub)
                         cub_score += -1
                 elif y_cub >= size - 20:
                     y_change_cub = 0
                     x_change_cub = 0
                     y_cub = 1
-                    p.boom(two_player_i, x_cub, y_cub)
                     if mode == 'Two player`s': 
+                        d.boom(two_player_i, x_cub, y_cub)
                         cub_score += -1
                 elif y_cub <= 0:
                     y_change_cub = 0
                     x_change_cub = 0
                     y_cub = size - 21
-                    p.boom(two_player_i, x_cub, y_cub)
                     if mode == 'Two player`s': 
+                        d.boom(two_player_i, x_cub, y_cub)
                         cub_score += -1
 
                 elif y_cub_y_nimiq:
@@ -232,10 +239,10 @@ def loop():
                 y += y_change
 
 
-                p.red_car_move(red_direction, x_cub, y_cub)
-                p.car_move( direction, x, y)
+                d.red_car_move(red_direction, x_cub, y_cub)
+                d.car_move( direction, x, y)
 
-                p.draw_nimiq(x_nimiq, y_nimiq)
+                d.draw_nimiq(x_nimiq, y_nimiq)
                 pygame.display.update()
                 
                 if (x >= x_nimiq - 10
@@ -244,10 +251,10 @@ def loop():
                         and y <= y_nimiq + 10):
                     score += 1
                     if mode == 'One player': 
-                        p.message('like a boss, ' + player_i, 'green', 'small', x_nimiq + 16, y_nimiq)
+                        d.message('like a boss, ' + player_i, 'green', 'small', x_nimiq + 16, y_nimiq)
                     else: 
-                        p.message('like a boss', 'green', 'small', x_nimiq + 16, y_nimiq)
-                    p.log(player_i + '`s score: ' + str(score))
+                        d.message('like a boss', 'green', 'small', x_nimiq + 16, y_nimiq)
+                    log(player_i + '`s score: ' + str(score))
                     x_nimiq = round(randint(0, size - 10) / 10.0) * 10.0
                     y_nimiq = round(randint(0, size - 10) / 10.0) * 10.0
                     
@@ -256,32 +263,32 @@ def loop():
                     and y_cub >= y_nimiq - 10
                     and y_cub <= y_nimiq + 10):
                     cub_score += 1
-                    p.log(two_player_i + '`s score: ' + str(cub_score))
+                    log(two_player_i + '`s score: ' + str(cub_score))
                     if mode == 'One player': 
-                        p.message('like a boss, ' + two_player_i, 'green', 'small', x_nimiq + 16, y_nimiq)
+                        d.message('like a boss, ' + two_player_i, 'green', 'small', x_nimiq + 16, y_nimiq)
                     else: 
-                        p.message('like a noob', 'white', 'small', x_nimiq + 16, y_nimiq)
-                    x_nimiq = round(randint(0, size - 30) / 10.0) * 10.0
-                    y_nimiq = round(randint(0, size - 30) / 10.0) * 10.0
+                        d.message('like a noob', 'white', 'small', x_nimiq + 16, y_nimiq)
+                    x_nimiq = round(randint(0, size - 30))
+                    y_nimiq = round(randint(0, size - 30))
 
-                p.player_score(player_i, score)
-                p.cub_score_message(cub_score)
+                d.player_score(player_i, score)
+                d.cub_score_message(cub_score)
                 if mode != 'One player':
-                    p.player(player_i + ' vs ' + two_player_i)
+                    d.player(player_i + ' vs ' + two_player_i)
                 else:
-                    p.player(player_i + ' on ' + mode)
+                    d.player(player_i + ' on ' + mode)
                 clock.tick(FPS)
             else:
-                p.message('game paused!', 'white', 'med', size/2, size/2)
+                d.message('game paused!', 'white', 'med', size/2, size/2)
                 clock.tick(FPS)
                 
         if mode == 'One player':   
             if score > cub_score:
-                game_display.fill(p.get_color('white'))
+                game_display.fill(d.get_color('white'))
                 pygame.display.update()
                 msg = 'You WIN!!!'
             elif score < cub_score:
-                game_display.fill(p.get_color('black'))
+                game_display.fill(d.get_color('black'))
                 msg = 'You lose.'
             else: msg = 'Tie'
         else:
@@ -289,18 +296,18 @@ def loop():
             elif cub_score < score: msg = player_i + ' WIN!'      
             else: msg = 'TIE!!!'
                     
-        p.message(msg, 'gold') 
+        d.message(msg, 'gold') 
         clock.tick(2)
-        game_display.fill(p.get_color('blue'))
-        p.message('Closing the game... Your score: ' + str(score) + ', ' + two_player_i + '`s score: ' + str(cub_score),
+        game_display.fill(d.get_color('blue'))
+        d.message('Closing the game... Your score: ' + str(score) + ', ' + two_player_i + '`s score: ' + str(cub_score),
                        'white')
         clock.tick(2)
-        p.save_exit(player_i, score, two_player_i, cub_score)
+        d.my_exit()
             
     except Exception as e: 
-        p.log('Error: ')
-        p.log(e)
-        p.my_exit(1)
+        log('Error in main loop: ')
+        log(e)
+        d.my_exit(1)
 
 loop()
         
