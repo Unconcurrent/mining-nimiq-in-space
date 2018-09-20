@@ -1,5 +1,5 @@
 from random import randint
-from time import time
+from time import sleep 
 import pygame, sys, os
 from tkinter import Tk, Text, Label, Button, END
 try: from Data.colors import all_colors as ac
@@ -13,19 +13,7 @@ size = 700
 score = 0
 cub_score = 0
 
-def ps():
-    '''
-    Plaform slash.
-    '''
-    import platform
-    if platform.system() == 'Windows':
-        a = '\\'
-    else:
-        a = '/'
-    del platform
-    return a
-ps = ps()
-def car_move(direction, x, y):
+def rocket_move(direction, x, y):
     try:
         if direction == 'right':
             car = pygame.transform.rotate(img, 270)
@@ -46,28 +34,40 @@ def car_move(direction, x, y):
             car = pygame.transform.rotate(img, 140)
 
         game_display.blit(car, (x, y))
-    except: space_button_click()
+    except Exception as e:
+        log('Error in car move!: ')
+        log(e)
+        save()
+        my_exit()
+        pass
     
-def red_car_move(red_direction, cub_x, cub_y):
-    if red_direction == 'right':
-        red_head = pygame.transform.rotate(red_img, 270)
-    elif red_direction == 'left':
-        red_head = pygame.transform.rotate(red_img, 90)
-    elif red_direction == 'up':
-        red_head = red_img
-    elif red_direction == 'down':
-        red_head = pygame.transform.rotate(red_img, 180)
-        
-    elif red_direction == 'right-up':
-        red_head = pygame.transform.rotate(red_img, 320)
-    elif red_direction == 'right-down':
-        red_head = pygame.transform.rotate(red_img, 220)
-    elif red_direction == 'left-up':
-        red_head = pygame.transform.rotate(red_img, 40)
-    elif red_direction == 'left-down':
-        red_head = pygame.transform.rotate(red_img, 140)
-        
-    game_display.blit(red_head, (cub_x, cub_y))  
+def red_rocket_move(red_direction, cub_x, cub_y):
+    try:
+        if red_direction == 'right':
+            red_head = pygame.transform.rotate(red_img, 270)
+        elif red_direction == 'left':
+            red_head = pygame.transform.rotate(red_img, 90)
+        elif red_direction == 'up':
+            red_head = red_img
+        elif red_direction == 'down':
+            red_head = pygame.transform.rotate(red_img, 180)
+            
+        elif red_direction == 'right-up':
+            red_head = pygame.transform.rotate(red_img, 320)
+        elif red_direction == 'right-down':
+            red_head = pygame.transform.rotate(red_img, 220)
+        elif red_direction == 'left-up':
+            red_head = pygame.transform.rotate(red_img, 40)
+        elif red_direction == 'left-down':
+            red_head = pygame.transform.rotate(red_img, 140)
+            
+        game_display.blit(red_head, (cub_x, cub_y))
+    except Exception as e:
+        log('Error in red rocket move!: ')
+        log(e)
+        save()
+        my_exit()
+        pass
 
 def text_object(text, color, font_size):
     if font_size == 'small':
@@ -96,22 +96,21 @@ def game_init():
         pygame.init()
         pygame.display.set_caption('Kyky')
         game_display = pygame.display.set_mode((size, size))
-        timer = time()
         
         log('initialization skin`s...')
-        background = pygame.image.load(os.path.abspath(os.path.dirname(sys.argv[0])) +  ps+'Data'+ps+'space.jpg')
-        img = pygame.image.load(os.path.abspath(os.path.dirname(sys.argv[0])) +  ps+'Data'+ps+'rocket.png')
-        red_img = pygame.image.load(os.path.abspath(os.path.dirname(sys.argv[0])) +  ps+'Data'+ps+'red_rocket.png')
-        nimiq_img = pygame.image.load(os.path.abspath(os.path.dirname(sys.argv[0])) +  ps+'Data'+ps+'mini_nimiq.png')
+        background = pygame.image.load(os.path.abspath(os.path.dirname(sys.argv[0])) +  '/'+'Data'+'/'+'space.jpg')
+        img = pygame.image.load(os.path.abspath(os.path.dirname(sys.argv[0])) +  '/'+'Data'+'/'+'rocket.png')
+        red_img = pygame.image.load(os.path.abspath(os.path.dirname(sys.argv[0])) +  '/'+'Data'+'/'+'red_rocket.png')
+        nimiq_img = pygame.image.load(os.path.abspath(os.path.dirname(sys.argv[0])) +  '/'+'Data'+'/'+'mini_nimiq.png')
         log('skin`s initialization complete!')
 
         log('initialization fonts...')
         clock = pygame.time.Clock()
-        if ps == '/': smallfont = pygame.font.SysFont(None, calc_fonts('small'))
-        else: smallfont = pygame.font.SysFont('Comic Sans MS', calc_fonts('small'))
+        smallfont = pygame.font.SysFont('Comic Sans MS', calc_fonts('small'))
         medfont = pygame.font.SysFont('Comic Sans MS', calc_fonts('med'))
         largefont = pygame.font.SysFont('Comic Sans MS', calc_fonts('large'))
         log('fonts initialization complete!')
+        
     except Exception as e: 
         log('game initialization faild!')
         log(e)
@@ -271,7 +270,7 @@ def save():
     message('Closing the game... Your score: ' + str(score) + ', ' + two_player_i + '`s score: ' + str(cub_score), 'white')
     pygame.display.update()
     clock.tick(2)
-    path = os.path.abspath(os.path.dirname(sys.argv[0])) + ps+'Score.txt'
+    path = os.path.abspath(os.path.dirname(sys.argv[0])) + '/'+'Score.txt'
     log(path)
     write(
         'Last ' + player_i + '`s' + ' score: ' + str(score) + ', '+ two_player_i +'`s score: ' + str(cub_score) + '\n', 'Score.txt')
@@ -297,13 +296,13 @@ def my_exit():
         quit()
 
 def boom(x, y): 
-    img = pygame.image.load(os.path.abspath(os.path.dirname(sys.argv[0])) + ps+'Data'+ps+'boom.png' ) 
+    img = pygame.image.load(os.path.abspath(os.path.dirname(sys.argv[0])) + '/'+'Data'+'/'+'boom.png' ) 
     game_display.blit(img, [x, y])
         
     
 def log(msg):
     try:
-        log_file =  ps+'Data'+ps+'log.txt'
+        log_file =  '/'+'Data'+'/'+'log.txt'
         print(msg)
         write(str(msg), log_file)
         write('\r\n', log_file)
@@ -318,15 +317,15 @@ def get_color(colo_r):
     return color
 
 def is_file(file, current_path = True):
-    if current_path: a = os.path.isfile(path+ps+file)
+    if current_path: a = os.path.isfile(path+'/'+file)
     else: a = os.path.isfile(file)
     return a
 
 def write(text, file_name = 'Temp.py'):
     if is_file(file_name):
-        f = open(path+ps+file_name, 'a')
+        f = open(path+'/'+file_name, 'a')
     elif not is_file(file_name):
-        f = open(path+ps+file_name, 'w')
+        f = open(path+'/'+file_name, 'w')
     f.write(text)
     f.close()
     del f
@@ -338,3 +337,4 @@ def restart():
     main_window()
     
 main_window()  
+

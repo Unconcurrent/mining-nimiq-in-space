@@ -82,7 +82,8 @@ def loop():
                 x_nimiq = randint(x_nimiq - 1, x_nimiq + 1)
                 y_nimiq = randint(y_nimiq - 1, y_nimiq + 1)
                 game_display.blit(background, [0, 0])
-
+                
+                #message('La multi ani, '+player_i, 'white',  size/2, size-10)
                 
                 if (y_change > 0 and x_change == 0):
                     direction = 'down'
@@ -161,7 +162,7 @@ def loop():
                     x_change = 0
                     boom(x, y)
                 
-                elif x_nimiq >= size - 20: x = 1
+                elif x_nimiq >= size - 20: x_nimiq = 1
                 elif x_nimiq <= 0: x_nimiq = size - 21
                 elif y_nimiq >= size - 20: y_nimiq = 1
                 elif y_nimiq <= 0: y_nimiq = size - 21
@@ -214,8 +215,8 @@ def loop():
                 y += y_change
 
 
-                red_car_move(red_direction, x_cub, y_cub)
-                car_move( direction, x, y)
+                red_rocket_move(red_direction, x_cub, y_cub)
+                rocket_move( direction, x, y)
 
                 draw_nimiq(x_nimiq, y_nimiq)
                 
@@ -266,7 +267,6 @@ def loop():
         log('Fatal Error in main loop: ')
         log(e)
         pass
-
 loop()
-log('Exited! \r\n')
+log('Exited! ')
         
