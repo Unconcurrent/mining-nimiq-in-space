@@ -83,7 +83,7 @@ def loop():
                 y_nimiq = randint(y_nimiq - 1, y_nimiq + 1)
                 game_display.blit(background, [0, 0])
                 
-                #message('La multi ani, '+player_i, 'white',  size/2, size-10)
+                #message('Happy Birthday, '+player_i, 'white',  size/2, size-10)
                 
                 if (y_change > 0 and x_change == 0):
                     direction = 'down'
